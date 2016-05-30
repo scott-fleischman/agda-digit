@@ -38,12 +38,12 @@ apply
 apply end end = end
 apply (add f fs) (add x xs) = add (f x) (apply fs xs)
 
-append
+concat
   : {la : Level}
   → {A : Set la}
   → {n m : Nat}
   → Vec A n
   → Vec A m
   → Vec A (n + m)
-append end ys = ys
-append (add x xs) ys = add x (append xs ys)
+concat end ys = ys
+concat (add x xs) ys = add x (concat xs ys)
