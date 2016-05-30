@@ -52,17 +52,6 @@ normalize (𝟘 ∷ xs) | [] = []
 normalize (𝟙 ∷ xs) | [] = 𝟙 ∷ []
 normalize (x ∷ xs) | x' ∷ xs' = x ∷ x' ∷ xs'
 
-normalize0-1 : normalize (𝟘 ∷ []) ≡ []
-normalize0-1 = refl
-normalize0-2 : normalize (𝟘 ∷ 𝟘 ∷ []) ≡ []
-normalize0-2 = refl
-normalize0-3 : normalize (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []) ≡ []
-normalize0-3 = refl
-normalize1-1 : normalize (𝟙 ∷ 𝟘 ∷ []) ≡ (𝟙 ∷ [])
-normalize1-1 = refl
-normalize1-2 : normalize (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) ≡ (𝟙 ∷ [])
-normalize1-2 = refl
-
 normalize-idempotent : (xs : List Digit) → normalize (normalize xs) ≡ normalize xs
 normalize-idempotent [] = refl
 normalize-idempotent (x ∷ xs) with normalize xs | normalize-idempotent xs
@@ -70,25 +59,27 @@ normalize-idempotent (𝟘 ∷ xs) | [] | refl = refl
 normalize-idempotent (𝟙 ∷ xs) | [] | refl = refl
 normalize-idempotent (x ∷ xs) | x' ∷ xs' | p rewrite p = refl
 
-normalize-empty-replicate : (n : Nat) → normalize (concat [] (replicate n 𝟘)) ≡ []
-normalize-empty-replicate Z = refl
-normalize-empty-replicate (S n) rewrite normalize-empty-replicate n = refl
+normalize-append-zero
+  : (xs : List Digit)
+  → normalize (append xs 𝟘) ≡ normalize xs
+normalize-append-zero [] = refl
+normalize-append-zero (x ∷ xs) with normalize xs | normalize-append-zero xs
+normalize-append-zero (𝟘 ∷ xs) | [] | p rewrite p = refl
+normalize-append-zero (𝟙 ∷ xs) | [] | p rewrite p = refl
+normalize-append-zero (x ∷ xs) | x' ∷ xs' | p rewrite p = refl
 
-normalize-zero-replicate : (n : Nat) → normalize (concat (normalize (𝟘 ∷ [])) (replicate n 𝟘)) ≡ []
-normalize-zero-replicate Z = refl
-normalize-zero-replicate (S n) rewrite normalize-zero-replicate n = refl
+normalize-add-two-zeros
+  : (xs : List Digit)
+  → normalize (append (append xs 𝟘) 𝟘) ≡ normalize xs
+normalize-add-two-zeros xs rewrite normalize-append-zero (append xs 𝟘) | normalize-append-zero xs = refl
 
-normalize-spec
+normalize-replicate
   : (xs : List Digit)
   → (n : Nat)
-  → normalize
-      (concat
-        (normalize xs)
-        (replicate n 𝟘))
-    ≡ normalize xs
-normalize-spec xs Z rewrite concat-empty (normalize xs) | normalize-idempotent xs = refl
-normalize-spec [] (S n) rewrite normalize-empty-replicate n = refl
-normalize-spec (x ∷ xs) (S n) with normalize xs | normalize-spec xs (S n)
-normalize-spec (𝟘 ∷ xs) (S n) | [] | p rewrite normalize-zero-replicate n = refl
-normalize-spec (𝟙 ∷ xs) (S n) | [] | p rewrite normalize-zero-replicate n = refl
-normalize-spec (x ∷ xs) (S n) | x' ∷ nxs | p rewrite p = refl
+  → normalize (concat xs (replicate n 𝟘)) ≡ normalize xs
+normalize-replicate xs Z rewrite concat-empty xs = refl
+normalize-replicate [] (S n) rewrite normalize-replicate [] n = refl
+normalize-replicate (x ∷ xs) (S n) with xs | normalize xs | normalize-replicate xs (S n)
+normalize-replicate (𝟘 ∷ xs) (S n) | xs' | [] | p rewrite p = refl
+normalize-replicate (𝟙 ∷ xs) (S n) | xs' | [] | p rewrite p = refl
+normalize-replicate (x ∷ xs) (S n) | xs' | nx ∷ nxs | p rewrite p = refl

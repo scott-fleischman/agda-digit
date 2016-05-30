@@ -32,3 +32,21 @@ concat-empty
   → concat xs [] ≡ xs
 concat-empty [] = refl
 concat-empty (x ∷ xs) rewrite concat-empty xs = refl
+
+append
+  : {la : Level}
+  → {A : Set la}
+  → List A
+  → A
+  → List A
+append [] x' = x' ∷ []
+append (x ∷ xs) x' = x ∷ append xs x'
+
+concat-append
+  : {la : Level}
+  → {A : Set la}
+  → (xs : List A)
+  → (x : A)
+  → concat xs (x ∷ []) ≡ append xs x
+concat-append [] x' = refl
+concat-append (x ∷ xs) x' rewrite concat-append xs x' = refl
