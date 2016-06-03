@@ -50,3 +50,19 @@ concat-append
   → concat xs (x ∷ []) ≡ append xs x
 concat-append [] x' = refl
 concat-append (x ∷ xs) x' rewrite concat-append xs x' = refl
+
+reverse-aux
+  : {la : Level}
+  → {A : Set la}
+  → List A
+  → List A
+  → List A
+reverse-aux rs [] = rs
+reverse-aux rs (x ∷ xs) = reverse-aux (x ∷ rs) xs
+
+reverse
+  : {la : Level}
+  → {A : Set la}
+  → List A
+  → List A
+reverse = reverse-aux []

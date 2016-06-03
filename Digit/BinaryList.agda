@@ -2,16 +2,17 @@
 
 module Digit.BinaryList where
 
+open import Agda.Builtin.FromNat
 open import Agda.Builtin.Nat using (Nat) renaming (zero to Z; suc to S; _*_ to _*Nat_; _+_ to _+Nat_)
 open import Agda.Builtin.Equality
+open import Agda.Builtin.Unit
 open import Container.List
 open import Container.Product
+open import Digit.Binary
+open import Digit.UnaryNat
 
 infixl 6 _+_
 infixl 7 _*_
-
-data Digit : Set where
-  𝟘 𝟙 : Digit
 
 increment : List Digit → List Digit
 increment [] = 𝟙 ∷ []
@@ -23,11 +24,11 @@ toNat [] = 0
 toNat (𝟘 ∷ xs) = 2 *Nat (toNat xs)
 toNat (𝟙 ∷ xs) = S (2 *Nat (toNat xs))
 
-fromNat : Nat → List Digit
-fromNat 0 = []
-fromNat (S n) = increment (fromNat n)
-
-{-# BUILTIN FROMNAT fromNat #-}
+instance
+  NumberBinaryList : Number (List Digit)
+  Number.Constraint NumberBinaryList _ = ⊤
+  Number.fromNat NumberBinaryList Z = []
+  Number.fromNat NumberBinaryList (S n) = increment (Number.fromNat NumberBinaryList n)
 
 _+_ : List Digit → List Digit → List Digit
 [] + y = y
@@ -48,9 +49,9 @@ _*_ : List Digit → List Digit → List Digit
 normalize : List Digit → List Digit
 normalize [] = []
 normalize (x ∷ xs) with normalize xs
-normalize (𝟘 ∷ xs) | [] = []
-normalize (𝟙 ∷ xs) | [] = 𝟙 ∷ []
-normalize (x ∷ xs) | x' ∷ xs' = x ∷ x' ∷ xs'
+normalize (𝟘 ∷ _) | [] = []
+normalize (𝟙 ∷ _) | [] = 𝟙 ∷ []
+normalize (x ∷ _) | x' ∷ xs' = x ∷ x' ∷ xs'
 
 normalize-idempotent : (xs : List Digit) → normalize (normalize xs) ≡ normalize xs
 normalize-idempotent [] = refl

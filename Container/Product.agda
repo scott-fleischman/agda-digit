@@ -9,5 +9,6 @@ data Product {la lb : Level} (A : Set la) (B : Set lb) : Set (la ⊔ lb) where
 
 _×_ = Product
 
+infixl 1 _,_
 _,_ : {la lb : Level} {A : Set la} {B : Set lb} → A → B → A × B
 _,_ = product

@@ -5,9 +5,11 @@ module Container.Vector where
 open import Agda.Primitive
 open import Agda.Builtin.Nat
 
+infixr 5 _∷_
+infixl 4 _⊛_
 data Vec {la : Level} (A : Set la) : Nat → Set la where
-  end : Vec A zero
-  add : {n : Nat} → A → Vec A n → Vec A (suc n)
+  [] : Vec A zero
+  _∷_ : {n : Nat} → A → Vec A n → Vec A (suc n)
 
 map
   : {la lb : Level}
@@ -17,15 +19,15 @@ map
   → (A → B)
   → Vec A n
   → Vec B n
-map f end = end
-map f (add x xs) = add (f x) (map f xs)
+map f [] = []
+map f (x ∷ xs) = f x ∷ map f xs
 
 pure
   : {la : Level}
   → {A : Set la}
   → A
   → Vec A 1
-pure x = add x end
+pure x = x ∷ []
 
 apply
   : {la lb : Level}
@@ -35,8 +37,10 @@ apply
   → Vec (A → B) n
   → Vec A n
   → Vec B n
-apply end end = end
-apply (add f fs) (add x xs) = add (f x) (apply fs xs)
+apply [] [] = []
+apply (f ∷ fs) (x ∷ xs) = f x ∷ apply fs xs
+
+_⊛_ = apply
 
 concat
   : {la : Level}
@@ -45,5 +49,36 @@ concat
   → Vec A n
   → Vec A m
   → Vec A (n + m)
-concat end ys = ys
-concat (add x xs) ys = add x (concat xs ys)
+concat [] ys = ys
+concat (x ∷ xs) ys = x ∷ concat xs ys
+
+replicate
+  : {la : Level}
+  → {A : Set la}
+  → (n : Nat)
+  → A
+  → Vec A n
+replicate zero x = []
+replicate (suc n) x = x ∷ replicate n x
+
+foldr
+  : {la lb : Level}
+  → {A : Set la}
+  → {B : Set lb}
+  → {n : Nat}
+  → (A → B → B)
+  → Vec A n
+  → B
+  → B
+foldr f [] b = b
+foldr f (x ∷ xs) b = f x (foldr f xs b)
+
+import Container.List as List
+toList
+  : {la : Level}
+  → {A : Set la}
+  → {n : Nat}
+  → Vec A n
+  → List.List A
+toList [] = List.[]
+toList (x ∷ xs) = x List.∷ toList xs

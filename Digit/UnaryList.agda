@@ -3,7 +3,9 @@
 module Digit.UnaryList where
 
 open import Agda.Builtin.Equality
+open import Agda.Builtin.FromNat
 open import Agda.Builtin.Nat using (Nat; zero; suc) renaming (_*_ to _*Nat_; _+_ to _+Nat_)
+open import Agda.Builtin.Unit
 open import Container.List
 
 data Digit : Set where
@@ -16,17 +18,19 @@ toNat : List Digit → Nat
 toNat [] = zero
 toNat (𝟙 ∷ xs) = suc (toNat xs)
 
-fromNat : Nat → List Digit
-fromNat zero = []
-fromNat (suc n) = 𝟙 ∷ fromNat n
+instance
+  NumberUnaryList : Number (List Digit)
+  Number.Constraint NumberUnaryList _ = ⊤
+  Number.fromNat NumberUnaryList zero = []
+  Number.fromNat NumberUnaryList (suc n) = 𝟙 ∷ Number.fromNat NumberUnaryList n
 
-{-# BUILTIN FROMNAT fromNat #-}
+fromℕ = Number.fromNat NumberUnaryList
 
-test-zero : fromNat(toNat 0) ≡ 0
+test-zero : fromℕ(toNat 0) ≡ 0
 test-zero = refl
-test-one : fromNat(toNat 1) ≡ 1
+test-one : fromℕ(toNat 1) ≡ 1
 test-one = refl
-test-two : fromNat(toNat 2) ≡ 2
+test-two : fromℕ(toNat 2) ≡ 2
 test-two = refl
 
 right-identity : (n : Nat) → toNat(fromNat n) ≡ n
