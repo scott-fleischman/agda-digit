@@ -8,6 +8,14 @@ open import Agda.Primitive
 open import Agda.Builtin.Nat
 open import Agda.Builtin.Equality
 
+length
+  : {la : Level}
+  → {A : Set la}
+  → List A
+  → Nat
+length [] = 0
+length (_ ∷ xs) = suc (length xs)
+
 replicate
   : {la : Level}
   → {A : Set la}
