@@ -82,3 +82,18 @@ toList
   → List.List A
 toList [] = List.[]
 toList (x ∷ xs) = x List.∷ toList xs
+
+record VecR {la : Level} (A : Set la) : Set la where
+  constructor vector
+  field
+    length : Nat
+    items : Vec A length
+
+toVec
+  : {la : Level}
+  → {A : Set la}
+  → List.List A
+  → VecR A
+toVec List.[] = vector zero []
+toVec (x List.∷ xs) with toVec xs
+toVec (x List.∷ xs) | vector length items = vector (suc length) (x ∷ items)

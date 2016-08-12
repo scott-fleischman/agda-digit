@@ -37,6 +37,9 @@ vec-toℕ : {n d : Nat} → Vec (Fin d) n → Nat
 vec-toℕ [] = 0
 vec-toℕ {n = suc n} {d} (x ∷ xs) = (fin-toℕ x) *ℕ (d ^ℕ n) +ℕ vec-toℕ xs
 
+vecR-toℕ : {d : Nat} → VecR (Fin d) → Nat
+vecR-toℕ (vector length items) = vec-toℕ items
+
 module TestDigit where
   b2-0 : List (Fin 2)
   b2-0 = []
@@ -44,14 +47,21 @@ module TestDigit where
   b2-0≡0 : toℕ b2-0 ≡ 0
   b2-0≡0 = refl
 
-  b101 : Vec (Fin 2) _
+  b101 : List (Fin 2)
   b101 = (suc zero) ∷ zero ∷ (suc zero) ∷ []
 
-  b101≡5 : vec-toℕ b101 ≡ 5
+  b101≡5 : toℕ b101 ≡ 5
   b101≡5 = refl
+
+  b101≡5v : vecR-toℕ (toVec b101) ≡ 5
+  b101≡5v = refl
+
 
   b3-120 : List (Fin 3)
   b3-120 = (suc zero) ∷ (suc (suc zero)) ∷ zero ∷ []
 
   b3-120≡15 : toℕ b3-120 ≡ 15
   b3-120≡15 = refl
+
+  b3-120≡15v : vecR-toℕ (toVec b3-120) ≡ 15
+  b3-120≡15v = refl
