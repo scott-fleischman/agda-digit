@@ -4,6 +4,7 @@ module Container.Vector where
 
 open import Agda.Primitive
 open import Agda.Builtin.Nat
+open import Basic.NumberNat
 
 infixr 5 _∷_
 infixl 4 _⊛_

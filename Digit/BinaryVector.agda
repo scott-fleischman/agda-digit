@@ -3,6 +3,7 @@
 module Digit.BinaryVector where
 
 open import Agda.Builtin.Nat using (Nat)
+open import Basic.NumberNat
 open import Container.Product
 open import Container.Vector
 open import Digit.Binary

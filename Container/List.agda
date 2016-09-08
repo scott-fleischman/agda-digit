@@ -3,10 +3,10 @@
 module Container.List where
 
 open import Agda.Builtin.List public
-
 open import Agda.Primitive
 open import Agda.Builtin.Nat
 open import Agda.Builtin.Equality
+open import Basic.NumberNat
 
 length
   : {la : Level}

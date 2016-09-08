@@ -6,6 +6,7 @@ open import Agda.Builtin.Nat
   renaming (_*_ to _*ℕ_)
 open import Agda.Builtin.List
 open import Agda.Builtin.Equality
+open import Basic.NumberNat
 open import Container.List using (length)
 open import Container.Vector
 

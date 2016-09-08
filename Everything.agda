@@ -1,4 +1,5 @@
 module Everything where
+import Basic.NumberNat
 import Container.List
 import Container.Product
 import Container.Vector
